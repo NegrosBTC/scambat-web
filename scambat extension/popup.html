@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { width: 320px; min-height: 400px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-5 text-center">
+        <h1 class="text-lg font-semibold">🛡️ ScamBat</h1>
+        <p class="text-xs opacity-90">Protect the web from scams</p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="p-12 text-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+        <p class="text-gray-600 text-sm">Checking status...</p>
+    </div>
+
+    <!-- Authenticated State -->
+    <div id="authenticated" class="hidden">
+        <div class="p-5 space-y-4">
+            <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-gray-800" id="username">User</span>
+                    <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-semibold" id="cyberpoints">0 ⭐</span>
+                </div>
+                <p class="text-xs text-gray-600">✅ Connected and ready!</p>
+            </div>
+
+            <button id="quick-report-btn" class="w-full bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition-colors font-medium">
+                🚨 Report Current Page
+            </button>
+            
+            <button id="view-history-btn" class="w-full bg-purple-500 text-white py-3 px-4 rounded-lg hover:bg-purple-600 transition-colors font-medium">
+                📋 View Report History
+            </button>
+
+            <div class="bg-gray-100 rounded-lg p-3 text-xs text-gray-600 space-y-1">
+                <p class="font-semibold text-gray-800 mb-2">How to use:</p>
+                <p>• Right-click suspicious content → "Report as Scam"</p>
+                <p>• Use button above for full page reports</p>
+                <p>• View your report history to manage blocked sites</p>
+                <p>• Earn cyberpoints for valid reports!</p>
+            </div>
+
+            <div class="flex justify-between pt-2">
+                <button id="disconnect-btn" class="text-gray-500 hover:text-gray-700 text-xs">Disconnect</button>
+                <button id="dashboard-btn" class="text-gray-500 hover:text-gray-700 text-xs">View Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Not Authenticated State -->
+    <div id="not-authenticated" class="hidden">
+        <div class="p-5 space-y-4">
+            <div class="bg-white rounded-lg shadow p-4 border-l-4 border-red-500">
+                <p class="text-red-600 font-semibold mb-1">❌ Not Connected</p>
+                <p class="text-xs text-gray-600">Connect your ScamBat account to start reporting scams.</p>
+            </div>
+
+            <button id="connect-btn" class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 transition-colors font-medium">
+                🔗 Connect Account
+            </button>
+
+            <div class="bg-gray-100 rounded-lg p-3 text-xs text-gray-600 space-y-1">
+                <p class="font-semibold text-gray-800 mb-2">Quick Setup:</p>
+                <p>1. Click "Connect Account" above</p>
+                <p>2. Sign in to your ScamBat account</p>
+                <p>3. Start earning cyberpoints!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ScamBat{% endblock %}</title>
+    {% load static %}
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="w-full px-6 lg:px-12">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <a href="{% url 'home' %}" class="flex items-center space-x-3">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-10 w-10">
+                        <span class="text-2xl font-bold text-gray-900">ScamBat</span>
+                    </a>
+                </div>
+                
+                <!-- All navigation on the right side -->
+                <div class="hidden md:flex gap-8 items-center">
+                    {% if user.is_authenticated %}
+                        <span class="text-lg text-gray-500">Hi, {{ user.first_name|default:user.username }}!</span>
+                        <a href="{% url 'profile' %}" class="text-lg text-gray-700 hover:text-blue-600 transition-colors">Profile</a>
+                        <a href="{% url 'report_history' %}" class="text-lg text-gray-700 hover:text-blue-600 transition-colors">History</a>
+                        <a href="{% url 'leaderboard' %}" class="text-lg text-gray-700 hover:text-blue-600 transition-colors">Leaderboard</a>
+                        <div class="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg min-w-fit whitespace-nowrap">
+                            <svg class="w-5 h-5 text-yellow-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <span id="cyberpoints-display" class="text-lg font-semibold text-yellow-700">Cyberpoints: {{ user.profile.cyberpoints }}</span>
+                        </div>
+                        <a href="{% url 'logout' %}" class="text-lg bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-lg text-gray-700 hover:text-blue-600 transition-colors">Login</a>
+                        <a href="{% url 'signup' %}" class="text-lg bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">Sign Up</a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-gray-500 hover:text-gray-600" onclick="toggleMobileMenu()">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200">
+                    {% if user.is_authenticated %}
+                        <div class="px-3 py-2 text-lg text-gray-500">Hi, {{ user.first_name|default:user.username }}!</div>
+                        <div class="px-3 py-2">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span id="mobile-cyberpoints-display" class="text-lg font-semibold text-yellow-700">Cyberpoints: {{ user.profile.cyberpoints }}</span>
+                            </div>
+                        </div>
+                        <a href="{% url 'profile' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">Profile</a>
+                        <a href="{% url 'report_history' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">History</a>
+                        <a href="{% url 'leaderboard' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">Leaderboard</a>
+                        <a href="{% url 'logout' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">Login</a>
+                        <a href="{% url 'signup' %}" class="block px-3 py-2 text-lg text-gray-700 hover:text-blue-600">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </nav>
+    </header>
+    
+    <main class="flex-1">
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <p class="text-center text-gray-300">&copy; 2025 ScamBat, Inc. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

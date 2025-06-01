@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - ScamBat{% endblock %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-72">  <!-- increased py-64 to py-72 -->
+        <div class="text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-8">Welcome to ScamBat</h1>  <!-- increased text sizes and margin bottom -->
+            <p class="text-2xl md:text-3xl text-blue-100 max-w-4xl mx-auto">Your all in one suite for online scam prevention</p>  <!-- increased text sizes and added max width for better readability -->
+        </div>
+    </div>
+</section>
+
+<!-- Game Section -->
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row items-center gap-12">
+            <div class="lg:w-1/2">
+                <img 
+                    src="{% static 'images/image-1.png' %}"
+                    alt="FraudHero Game Preview"
+                    class="w-full h-full object-cover rounded-xl shadow-lg"
+                >
+            </div>
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">FraudHero Game</h2>
+                <p class="text-lg text-gray-600 mb-8">Learn to identify and prevent scams through our interactive game. Test your knowledge, earn points, and become a certified FraudHero while having fun!</p>
+                <a href="{% url 'game' %}" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
+                    Play Now
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Extension Section -->
+<section class="py-24 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row-reverse items-center gap-12">
+            <div class="lg:w-1/2">
+                <img 
+                    src="{% static 'images/image-2.png' %}"
+                    alt="ScamBat Extension Preview"
+                    class="w-full h-full object-cover rounded-xl shadow-lg"
+                >
+            </div>
+            <div class="lg:w-1/2 text-center lg:text-left">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">ScamBat Extension</h2>
+                <p class="text-lg text-gray-600 mb-8">Protect yourself while browsing with our powerful browser extension. Get real-time alerts and shielding for potential scams and blocked domains.</p>
+                <a href="#" class="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700">
+                    Download Now
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cyberpoints Section -->
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Cyberpoints System</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Earn rewards for staying vigilant and educating on online scams.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Earn Points</h3>
+                <p class="text-gray-600">Complete games, report scams, and help verify suspicious activities to earn Cyberpoints.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Level Up</h3>
+                <p class="text-gray-600">Progress through different tiers and unlock new features as you gain more experience.</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Redeem Rewards</h3>
+                <p class="text-gray-600">Use your earned Cyberpoints to unlock premium features and exclusive content.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h3 class="text-2xl font-semibold mb-4 text-gray-900">Contact Us</h3>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="mailto:s201701031@student.cky.edu.hk" class="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <span>s201701031@student.cky.edu.hk</span>
+                </a>
+                <a href="tel:+85294534884" class="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                    </svg>
+                    <span>+852 9453 4884</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

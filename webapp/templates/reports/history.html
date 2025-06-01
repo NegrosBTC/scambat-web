@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Report History - ScamBat{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Stats -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6 mb-8">
+        <h1 class="text-3xl font-bold mb-4">Your Report History</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white/20 rounded-lg p-4">
+                <div class="text-3xl font-bold">{{ total_reports }}</div>
+                <div class="text-sm opacity-90">Total Reports</div>
+            </div>
+            <div class="bg-white/20 rounded-lg p-4">
+                <div class="text-3xl font-bold">{{ blocked_sites }}</div>
+                <div class="text-sm opacity-90">Blocked Sites</div>
+            </div>
+            <div class="bg-white/20 rounded-lg p-4">
+                <div class="text-3xl font-bold">{{ total_points_earned }}</div>
+                <div class="text-sm opacity-90">Points Earned</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div class="flex flex-wrap gap-4 items-center">
+            <button class="filter-btn active" data-filter="all">All Reports</button>
+            <button class="filter-btn" data-filter="blocked">Blocked Only</button>
+            <button class="filter-btn" data-filter="unblocked">Unblocked Only</button>
+            <input type="text" id="search-reports" placeholder="Search URLs..." 
+                   class="flex-1 min-w-64 px-4 py-2 border rounded-lg">
+        </div>
+    </div>
+
+    <!-- Reports List -->
+    <div class="space-y-4" id="reports-container">
+        {% for report in reports %}
+        <div class="report-card bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow" 
+             data-blocked="{{ report.is_blocked_by_reporter|yesno:'true,false' }}"
+             data-url="{{ report.url }}">
+            
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">
+                            {{ report.url|truncatechars:60 }}
+                        </h3>
+                        {% if report.is_blocked_by_reporter %}
+                            <span class="badge badge-danger">🚫 Blocked</span>
+                        {% endif %}
+                        {% if report.verification_status == 'verified' %}
+                            <span class="badge badge-success">✅ Verified</span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-gray-600 mb-3">{{ report.reason }}</p>
+                    
+                    <div class="flex flex-wrap gap-4 text-sm text-gray-500">
+                        <span><i class="far fa-calendar"></i> {{ report.created_at|date:"M d, Y" }}</span>
+                        <span><i class="fas fa-coins"></i> +{{ report.points_earned }} points</span>
+                        {% if report.visit_attempts_after_report > 0 %}
+                            <span class="text-red-600">
+                                <i class="fas fa-exclamation-triangle"></i> 
+                                Attempted to visit {{ report.visit_attempts_after_report }} time{{ report.visit_attempts_after_report|pluralize }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-2 ml-4">
+                    <button class="toggle-block-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors
+                            {% if report.is_blocked_by_reporter %}
+                                bg-gray-200 text-gray-700 hover:bg-gray-300
+                            {% else %}
+                                bg-red-500 text-white hover:bg-red-600
+                            {% endif %}"
+                            data-report-id="{{ report.id }}">
+                        {% if report.is_blocked_by_reporter %}
+                            <i class="fas fa-unlock"></i> Unblock
+                        {% else %}
+                            <i class="fas fa-ban"></i> Block
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-12">
+            <div class="text-6xl mb-4">📭</div>
+            <h3 class="text-xl font-semibold text-gray-700 mb-2">No Reports Yet</h3>
+            <p class="text-gray-600">Start protecting the community by reporting scams!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-8 flex justify-center">
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a>
+            {% endif %}
+            
+            <span class="current-page">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.filter-btn {
+    padding: 0.5rem 1rem;
+    background-color: #e5e7eb;
+    color: #374151;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.filter-btn:hover {
+    background-color: #d1d5db;
+}
+.filter-btn.active {
+    background-color: #3b82f6;
+    color: white;
+}
+.filter-btn.active:hover {
+    background-color: #2563eb;
+}
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-danger {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+.badge-success {
+    background-color: #d1fae5;
+    color: #047857;
+}
+.badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.pagination {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.page-link {
+    padding: 0.5rem 1rem;
+    background: #e5e7eb;
+    color: #374151;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.page-link:hover {
+    background: #d1d5db;
+}
+.current-page {
+    color: #6b7280;
+    font-weight: 500;
+}
+</style>
+
+<script>
+// Get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Filter functionality
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.dataset.filter;
+        const reports = document.querySelectorAll('.report-card');
+        
+        reports.forEach(report => {
+            if (filter === 'all') {
+                report.style.display = 'block';
+            } else if (filter === 'blocked' && report.dataset.blocked === 'true') {
+                report.style.display = 'block';
+            } else if (filter === 'unblocked' && report.dataset.blocked === 'false') {
+                report.style.display = 'block';
+            } else {
+                report.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Search functionality
+document.getElementById('search-reports').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const reports = document.querySelectorAll('.report-card');
+    
+    reports.forEach(report => {
+        const url = report.dataset.url.toLowerCase();
+        if (url.includes(searchTerm)) {
+            report.style.display = 'block';
+        } else {
+            report.style.display = 'none';
+        }
+    });
+});
+
+// Toggle block status
+document.querySelectorAll('.toggle-block-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const reportId = this.dataset.reportId;
+        
+        try {
+            const response = await fetch(`/reports/toggle-block/${reportId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                location.reload();
+            }
+        } catch (error) {
+            console.error('Error toggling block:', error);
+            alert('Failed to update block status');
+        }
+    });
+});
+</script>
+{% endblock %}

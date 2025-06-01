@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Site Blocked - ScamBat</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-2xl mx-auto p-8">
+        <div class="bg-white rounded-lg shadow-2xl p-8 text-center">
+            <div class="text-6xl mb-6">🛡️</div>
+            <h1 class="text-3xl font-bold text-red-600 mb-4">Site Blocked</h1>
+            
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 text-left mb-6">
+                <p class="text-gray-700 mb-2">
+                    <strong>You reported this site as a scam</strong>
+                </p>
+                <p class="text-sm text-gray-600" id="block-reason"></p>
+                <p class="text-xs text-gray-500 mt-2">
+                    Reported on: <span id="report-date"></span>
+                </p>
+                <p class="text-xs text-red-600 mt-1" id="attempt-count"></p>
+            </div>
+            
+            <div class="space-y-4">
+                <p class="text-gray-600">
+                    This page has been blocked for your protection based on your previous scam report.
+                </p>
+                
+                <div class="flex gap-4 justify-center">
+                    <button id="go-back" class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        ← Go Back to Safety
+                    </button>
+                    <button id="view-history" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                        View Report History
+                    </button>
+                </div>
+                
+                <details class="mt-6 text-left">
+                    <summary class="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                        Why am I seeing this?
+                    </summary>
+                    <div class="mt-2 p-4 bg-gray-50 rounded-lg text-sm text-gray-600">
+                        <p class="mb-2">You previously reported this website as a scam through ScamBat. To protect you from potential harm, we're blocking access to this site.</p>
+                        <p>If you believe this is a mistake, you can unblock this site from your <a href="#" id="history-link" class="text-blue-500 hover:underline">report history</a>.</p>
+                    </div>
+                </details>
+            </div>
+            
+            <div class="mt-8 text-xs text-gray-400">
+                Blocked URL: <span id="blocked-url" class="font-mono"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="blocked.js"></script>
+</body>
+</html>

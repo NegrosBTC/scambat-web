@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+
+{% block title %}FraudHero - ScamBat{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-4">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Game Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-3xl font-bold text-gray-900 mb-1">FraudHero</h1>
+            <p class="text-base text-gray-600">Identify scams and earn cyberpoints!</p>
+        </div>
+
+        <!-- Game Mode Selection -->
+        <div id="mode-selection" class="flex justify-center mb-6">
+            <div class="bg-white rounded-lg shadow-lg p-6 max-w-md">
+                <h2 class="text-xl font-bold mb-4 text-center">Choose Game Mode</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="setGameMode('sms')" class="mode-btn bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 font-semibold transition-all">
+                        📱 SMS Messages
+                    </button>
+                    <button onclick="setGameMode('email')" class="mode-btn bg-purple-500 text-white py-3 px-4 rounded-lg hover:bg-purple-600 font-semibold transition-all">
+                        📧 Email Messages
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Container -->
+        <div class="flex justify-center items-start gap-8">
+            <!-- Phone/Email UI Container -->
+            <div id="game-interface" class="relative transform scale-110 origin-top hidden">
+                <!-- SMS Interface -->
+                <div id="sms-interface" class="hidden">
+                    <!-- Phone Frame -->
+                    <div class="bg-gray-900 rounded-[3rem] p-4 shadow-2xl" style="width: 414px; height: 896px;">
+                        <!-- Phone Screen -->
+                        <div class="bg-white rounded-[2.5rem] h-full overflow-hidden relative">
+                            <!-- Status Bar -->
+                            <div class="bg-gray-900 text-white px-6 py-2 text-xs flex justify-between items-center">
+                                <span>9:41 AM</span>
+                                <div class="flex gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Message App Header -->
+                            <div class="bg-gray-50 px-4 py-3 border-b flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button class="text-blue-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                        </svg>
+                                    </button>
+                                    <div>
+                                        <p id="sender-phone" class="font-semibold text-lg">Loading...</p>
+                                        <p class="text-sm text-gray-500">SMS Message</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Message Content Area -->
+                            <div class="h-full bg-gray-50 p-4" style="height: calc(100% - 140px);">
+                                <div id="sms-message-container" class="hidden">
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm max-w-[85%]">
+                                        <p id="sms-message-text" class="text-gray-800 text-base"></p>
+                                        <p class="text-xs text-gray-400 mt-2">10:23 AM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Interface -->
+                <div id="email-interface" class="hidden">
+                    <!-- Email Window Frame -->
+                    <div class="bg-white rounded-lg shadow-2xl" style="width: 700px; height: 600px;">
+                        <!-- Email Header -->
+                        <div class="bg-gray-100 px-4 py-3 border-b flex items-center justify-between rounded-t-lg">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span class="font-semibold text-gray-700">Mail</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="w-3 h-3 bg-red-500 rounded-full"></button>
+                                <button class="w-3 h-3 bg-yellow-500 rounded-full"></button>
+                                <button class="w-3 h-3 bg-green-500 rounded-full"></button>
+                            </div>
+                        </div>
+
+                        <!-- Email Content -->
+                        <div class="p-6 h-full overflow-hidden">
+                            <div id="email-message-container" class="hidden h-full">
+                                <!-- Email Header Info -->
+                                <div class="border-b pb-4 mb-4">
+                                    <h2 id="email-subject" class="text-xl font-semibold text-gray-900 mb-2"></h2>
+                                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                                        <span>From:</span>
+                                        <span id="email-sender-name" class="font-medium"></span>
+                                        <span>&lt;<span id="email-sender-email"></span>&gt;</span>
+                                    </div>
+                                    <div class="text-sm text-gray-500 mt-1">
+                                        <span>To: {{ user.email }}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Email Body -->
+                                <div class="prose max-w-none">
+                                    <p id="email-message-text" class="text-gray-800 text-base leading-relaxed"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div id="loading-indicator" class="hidden flex items-center justify-center py-8 absolute inset-0 bg-white bg-opacity-90 rounded-lg">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <span class="ml-3 text-gray-600">Generating message...</span>
+                </div>
+
+                <!-- Submitting Indicator -->
+                <div id="submitting-indicator" class="hidden flex items-center justify-center py-8 absolute inset-0 bg-white bg-opacity-90 rounded-lg">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                    <span class="ml-3 text-gray-600">Submitting answer...</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div id="action-buttons" class="hidden absolute bottom-4 left-4 right-4">
+                    <div class="bg-white rounded-lg shadow-lg p-4">
+                        <p class="text-base font-semibold mb-3">Is this message a scam?</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button id="legitimate-btn" onclick="checkAnswer(false)" class="bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 font-semibold text-base transition-all disabled:bg-gray-400 disabled:cursor-not-allowed">
+                                Legitimate
+                            </button>
+                            <button id="scam-btn" onclick="checkAnswer(true)" class="bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 font-semibold text-base transition-all disabled:bg-gray-400 disabled:cursor-not-allowed">
+                                Scam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Input -->
+                <div id="explanation-input" class="hidden absolute bottom-4 left-4 right-4">
+                    <div class="bg-white rounded-lg shadow-lg p-4">
+                        <p class="text-base font-semibold mb-2">Why do you think this is a scam?</p>
+                        <textarea id="explanation-text" class="w-full p-2 border rounded-lg text-base" rows="3" placeholder="Explain the red flags..."></textarea>
+                        <button id="submit-explanation-btn" onclick="submitExplanation()" class="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-base transition-all disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Result Display -->
+                <div id="result-display" class="hidden absolute bottom-4 left-4 right-4">
+                    <div class="bg-white rounded-lg shadow-lg p-4">
+                        <div id="result-content" class="text-base"></div>
+                        <button id="next-message-btn" onclick="nextMessage()" class="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-base">
+                            Next Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Score Display -->
+            <div class="bg-white rounded-lg shadow-lg p-6 min-w-[200px]">
+                <h3 class="font-semibold text-gray-700 mb-4 text-lg">Current Session</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Mode:</span>
+                        <span id="current-mode" class="font-bold text-lg">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Score:</span>
+                        <span id="current-score" class="font-bold text-xl">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Streak:</span>
+                        <span id="current-streak" class="font-bold text-xl">0</span>
+                    </div>
+                    <hr class="my-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Session Total:</span>
+                        <span id="session-total" class="font-bold text-xl text-blue-600">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Account Points:</span>
+                        <span id="account-points" class="font-bold text-xl text-yellow-600">{{ user.profile.cyberpoints }}</span>
+                    </div>
+                </div>
+                
+                <!-- Change Mode Button -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <button onclick="changeMode()" class="w-full bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 text-sm transition-all">
+                        Change Mode
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tutorial Modal -->
+        <div id="tutorial-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-lg p-6 max-w-lg">
+                <h2 class="text-xl font-bold mb-4">How to Play FraudHero</h2>
+                <ol class="text-sm space-y-2 mb-6">
+                    <li>1. Choose your game mode (SMS or Email)</li>
+                    <li>2. Read the message carefully</li>
+                    <li>3. Decide if it's a scam or legitimate</li>
+                    <li>4. If you think it's a scam, explain why</li>
+                    <li>5. Earn cyberpoints:</li>
+                    <li class="ml-4">• 10 points: Identify scam correctly</li>
+                    <li class="ml-4">• 20 points: + Basic explanation</li>
+                    <li class="ml-4">• 30 points: + Excellent explanation OR legitimate message</li>
+                    <li class="ml-4">• +5 points: Streak bonus (2+ correct)</li>
+                </ol>
+                <button onclick="closeTutorial()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentMessage = null;
+let currentGameMode = null;
+let score = 0;
+let streak = 0;
+let sessionTotal = 0;
+let accountPoints = parseInt("{{ user.profile.cyberpoints }}") || 0;
+let isSubmitting = false;
+let hasAnswered = false;
+
+function closeTutorial() {
+    document.getElementById('tutorial-modal').classList.add('hidden');
+}
+
+function setGameMode(mode) {
+    currentGameMode = mode;
+    document.getElementById('mode-selection').classList.add('hidden');
+    document.getElementById('game-interface').classList.remove('hidden');
+    document.getElementById('current-mode').textContent = mode.toUpperCase();
+    
+    // Show appropriate interface
+    if (mode === 'sms') {
+        document.getElementById('sms-interface').classList.remove('hidden');
+        document.getElementById('email-interface').classList.add('hidden');
+    } else {
+        document.getElementById('email-interface').classList.remove('hidden');
+        document.getElementById('sms-interface').classList.add('hidden');
+    }
+    
+    loadNewMessage();
+}
+
+function changeMode() {
+    // Reset game state
+    score = 0;
+    streak = 0;
+    sessionTotal = 0;
+    document.getElementById('current-score').textContent = '0';
+    document.getElementById('current-streak').textContent = '0';
+    document.getElementById('session-total').textContent = '0';
+    
+    // Hide game interface and show mode selection
+    document.getElementById('game-interface').classList.add('hidden');
+    document.getElementById('mode-selection').classList.remove('hidden');
+    document.getElementById('current-mode').textContent = '-';
+}
+
+async function loadNewMessage() {
+    isSubmitting = false;
+    hasAnswered = false;
+    
+    document.getElementById('loading-indicator').classList.remove('hidden');
+    hideAllMessageContainers();
+    document.getElementById('action-buttons').classList.add('hidden');
+    document.getElementById('submitting-indicator').classList.add('hidden');
+    
+    enableAllButtons();
+    
+    try {
+        const response = await fetch('/api/game/generate-stream/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'message_type': currentGameMode
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let messageText = '';
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value);
+            const lines = chunk.split('\n');
+            
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const data = JSON.parse(line.substring(6));
+                        
+                        if (data.type === 'start') {
+                            initializeMessageDisplay(data);
+                            messageText = '';
+                        } else if (data.type === 'text_chunk') {
+                            messageText += data.char;
+                            updateMessageText(messageText);
+                        } else if (data.type === 'complete') {
+                            currentMessage = data.full_message;
+                            document.getElementById('action-buttons').classList.remove('hidden');
+                        }
+                    } catch (e) {
+                        // Skip invalid JSON
+                    }
+                }
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error loading message:', error);
+        document.getElementById('loading-indicator').classList.add('hidden');
+        await loadNewMessageFallback();
+    }
+}
+
+function initializeMessageDisplay(data) {
+    document.getElementById('loading-indicator').classList.add('hidden');
+    
+    if (currentGameMode === 'sms') {
+        document.getElementById('sender-phone').textContent = data.phone_number || 'Unknown';
+        document.getElementById('sms-message-text').textContent = '';
+        document.getElementById('sms-message-container').classList.remove('hidden');
+    } else {
+        document.getElementById('email-sender-name').textContent = data.sender_name || 'Unknown Sender';
+        document.getElementById('email-sender-email').textContent = data.sender_email || 'unknown@example.com';
+        document.getElementById('email-subject').textContent = data.subject || 'No Subject';
+        document.getElementById('email-message-text').textContent = '';
+        document.getElementById('email-message-container').classList.remove('hidden');
+    }
+}
+
+function updateMessageText(text) {
+    if (currentGameMode === 'sms') {
+        document.getElementById('sms-message-text').textContent = text;
+    } else {
+        document.getElementById('email-message-text').textContent = text;
+    }
+}
+
+function hideAllMessageContainers() {
+    document.getElementById('sms-message-container').classList.add('hidden');
+    document.getElementById('email-message-container').classList.add('hidden');
+}
+
+async function loadNewMessageFallback() {
+    try {
+        const response = await fetch('/api/game/generate/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'message_type': currentGameMode
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentMessage = data.message;
+            displayMessage(currentMessage);
+        } else {
+            alert('Error loading message: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error connecting to server: ' + error);
+    }
+}
+
+function displayMessage(message) {
+    document.getElementById('loading-indicator').classList.add('hidden');
+    
+    if (message.type === 'sms') {
+        document.getElementById('sender-phone').textContent = message.phone_number;
+        document.getElementById('sms-message-text').textContent = message.text;
+        document.getElementById('sms-message-container').classList.remove('hidden');
+    } else {
+        document.getElementById('email-sender-name').textContent = message.sender_name;
+        document.getElementById('email-sender-email').textContent = message.sender_email;
+        document.getElementById('email-subject').textContent = message.subject;
+        document.getElementById('email-message-text').textContent = message.text;
+        document.getElementById('email-message-container').classList.remove('hidden');
+    }
+    
+    document.getElementById('action-buttons').classList.remove('hidden');
+}
+
+function checkAnswer(userThinksSCAM) {
+    if (isSubmitting || hasAnswered) {
+        return;
+    }
+    
+    disableAnswerButtons();
+    
+    if (userThinksSCAM) {
+        document.getElementById('action-buttons').classList.add('hidden');
+        document.getElementById('explanation-input').classList.remove('hidden');
+    } else {
+        submitAnswer(false, '');
+    }
+}
+
+async function submitExplanation() {
+    if (isSubmitting || hasAnswered) {
+        return;
+    }
+    
+    const explanation = document.getElementById('explanation-text').value.trim();
+    
+    if (explanation === '') {
+        alert('Please provide an explanation before submitting.');
+        return;
+    }
+    
+    disableSubmitButton();
+    
+    await submitAnswer(true, explanation);
+    document.getElementById('explanation-input').classList.add('hidden');
+    document.getElementById('explanation-text').value = '';
+}
+
+async function submitAnswer(userThinksSCAM, explanation) {
+    if (isSubmitting || hasAnswered) {
+        return;
+    }
+    
+    isSubmitting = true;
+    hasAnswered = true;
+    
+    document.getElementById('submitting-indicator').classList.remove('hidden');
+    
+    try {
+        const response = await fetch('/api/game/submit/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_thinks_scam: userThinksSCAM,
+                explanation: explanation,
+                actual_is_scam: currentMessage.is_scam,
+                message_text: currentMessage.text,
+                red_flags: currentMessage.red_flags,
+                current_score: score,
+                current_streak: streak
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayResult(data);
+            updateTopBarPoints(data.total_points);
+        } else {
+            alert('Error submitting answer: ' + data.error);
+            isSubmitting = false;
+            hasAnswered = false;
+            enableAllButtons();
+        }
+    } catch (error) {
+        alert('Error connecting to server: ' + error);
+        isSubmitting = false;
+        hasAnswered = false;
+        enableAllButtons();
+    } finally {
+        document.getElementById('submitting-indicator').classList.add('hidden');
+    }
+}
+
+function displayResult(result) {
+    const resultDisplay = document.getElementById('result-display');
+    const resultContent = document.getElementById('result-content');
+    
+    let colorClass = result.is_correct ? 'text-green-600' : 'text-red-600';
+    let statusText = result.is_correct ? 'Correct!' : 'Incorrect';
+    
+    resultContent.innerHTML = `
+        <div class="${colorClass} font-bold text-lg mb-2">${statusText} ${result.points > 0 ? '+' + result.points + ' points' : ''}</div>
+        <p class="text-sm text-gray-600 mb-2">${result.analysis}</p>
+    `;
+    
+    if (result.is_correct) {
+        score += result.points;
+        streak = result.new_streak;
+    } else {
+        streak = 0;
+    }
+    
+    sessionTotal = result.session_total;
+    accountPoints = result.total_points;
+    
+    document.getElementById('current-score').textContent = score;
+    document.getElementById('current-streak').textContent = streak;
+    document.getElementById('session-total').textContent = sessionTotal;
+    document.getElementById('account-points').textContent = accountPoints;
+    
+    resultDisplay.classList.remove('hidden');
+    isSubmitting = false;
+}
+
+function disableAnswerButtons() {
+    document.getElementById('legitimate-btn').disabled = true;
+    document.getElementById('scam-btn').disabled = true;
+}
+
+function disableSubmitButton() {
+    document.getElementById('submit-explanation-btn').disabled = true;
+    document.getElementById('submit-explanation-btn').textContent = 'Submitting...';
+}
+
+function enableAllButtons() {
+    document.getElementById('legitimate-btn').disabled = false;
+    document.getElementById('scam-btn').disabled = false;
+    document.getElementById('submit-explanation-btn').disabled = false;
+    document.getElementById('submit-explanation-btn').textContent = 'Submit';
+}
+
+function updateTopBarPoints(newPoints) {
+    const topBarPoints = document.querySelector('#cyberpoints-display');
+    if (topBarPoints) {
+        topBarPoints.textContent = `Cyberpoints: ${newPoints}`;
+    }
+    
+    const mobilePoints = document.querySelector('#mobile-cyberpoints-display');
+    if (mobilePoints) {
+        mobilePoints.textContent = `Cyberpoints: ${newPoints}`;
+    }
+}
+
+async function nextMessage() {
+    document.getElementById('result-display').classList.add('hidden');
+    await loadNewMessage();
+}
+</script>
+{% endblock %}

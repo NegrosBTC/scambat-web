@@ -1,0 +1,57 @@
+{
+  "manifest_version": 2,
+  "name": "ScamBat Extension",
+  "version": "1.0",
+  "description": "Detect and report scams across the web with AI-powered analysis",
+
+  "permissions": [
+    "activeTab",
+    "contextMenus", 
+    "storage",
+    "tabs",
+    "notifications",
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking",
+    "http://localhost:8000/*",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "ScamBat - Report Scams",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+
+  "web_accessible_resources": [
+    "icons/*",
+    "content.css",
+    "blocked.html"
+  ],
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
